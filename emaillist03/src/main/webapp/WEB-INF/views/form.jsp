@@ -13,15 +13,15 @@
 		메일 리스트에 가입하려면,<br>
 		아래 항목을 기입하고 등록 버튼을 클릭하세요.
 	</p>
-	<form action="add.jsp" method="post">
-	    성: <input type="text" name="fn" value="" ><br>
-	    이름: <input type="text" name="ln" value=""><br>
+	<form action="${pageContext.request.contextPath}/add" method="post">
+	    성: <input type="text" name="firstName" value="" ><br>
+	    이름: <input type="text" name="lastName" value=""><br>
 	    이메일: <input type="text" name="email" value=""><br>
 	    <input type="submit" value="등록">
 	</form>
 	<br>
 	<p>
-		<a  href="/emaillist03">리스트보기</a>
+		<a  href="${pageContext.request.contextPath}">리스트보기</a>
 	</p>
 </body>
 </html>
