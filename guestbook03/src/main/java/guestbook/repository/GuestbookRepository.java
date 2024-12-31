@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import guestbook.repository.template.JdbcContext;
@@ -18,36 +19,25 @@ import guestbook.vo.GuestbookVo;
 @Repository
 public class GuestbookRepository {
 	private JdbcContext jdbcContext;
-	private DataSource dataSource;
-	public GuestbookRepository(JdbcContext jdbcContext, DataSource dataSource) {
+	public GuestbookRepository(JdbcContext jdbcContext) {
 		this.jdbcContext=jdbcContext;
-		this.dataSource=dataSource;
 	}
 	public List<GuestbookVo> findAll() {
-		List<GuestbookVo> result = new ArrayList<>();
-		
-		try (Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("select id, name, contents, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by reg_date desc");
-			ResultSet rs = pstmt.executeQuery();
-			){
-			
-			while (rs.next()) {
-				Long id = rs.getLong(1);
-				String name = rs.getString(2);
-				String contents = rs.getString(3);
-				String regDate=rs.getString(4);
+		return jdbcContext.queryForList(
+				"select id, name, contents, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by reg_date desc", 
+				new RowMapper<GuestbookVo>() {
 
-				GuestbookVo vo = new GuestbookVo();
-				vo.setId(id);
-				vo.setName(name);
-				vo.setContents(contents);
-				vo.setRegDate(regDate);
-				result.add(vo);
-			}
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} 
-		return result;
+					@Override
+					public GuestbookVo mapRow(ResultSet rs, int rowNum) throws SQLException {
+						GuestbookVo vo = new GuestbookVo();
+						vo.setId(rs.getLong(1));
+						vo.setName(rs.getString(2));
+						vo.setContents(rs.getString(3));
+						vo.setRegDate(rs.getString(4));
+						return vo;
+					}
+			});
+
 	}
 	
 	public int insert(GuestbookVo vo) {
