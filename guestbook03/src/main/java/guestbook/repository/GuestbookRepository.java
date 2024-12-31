@@ -11,12 +11,16 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
+import guestbook.repository.template.JdbcContext;
+import guestbook.repository.template.StatementStrategy;
 import guestbook.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
+	private JdbcContext jdbcContext;
 	private DataSource dataSource;
-	public GuestbookRepository(DataSource dataSource) {
+	public GuestbookRepository(JdbcContext jdbcContext, DataSource dataSource) {
+		this.jdbcContext=jdbcContext;
 		this.dataSource=dataSource;
 	}
 	public List<GuestbookVo> findAll() {
@@ -47,42 +51,12 @@ public class GuestbookRepository {
 	}
 	
 	public int insert(GuestbookVo vo) {
-		int count = 0;
-
-
-		try (Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("insert into guestbook values(null, ?, ?, ?, now())");
-			){
-
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getPassword());
-			pstmt.setString(3, vo.getContents());
-
-			count = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		}
-		return count;
+		return jdbcContext.executeUpdate("insert into guestbook values(null, ?, ?, ?, now())", new Object[] {vo.getName(),vo.getPassword(), vo.getContents()});
 		
 	}
 	
 	public int deleteByIdAndPassword(Long id, String password) {
-		int count = 0;
-		
-		try (Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id = ? and password = ?");
-			){
-
-			pstmt.setLong(1, id);
-			pstmt.setString(2, password);
-
-			count = pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		}
-		return count;
+		return jdbcContext.executeUpdate("delete from guestbook where id = ? and password = ?", new Object[] {id, password});
 		
 	}
 	
