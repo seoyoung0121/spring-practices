@@ -6,12 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.RowMapper;
-
-import guestbook.vo.GuestbookVo;
 
 
 public class JdbcContext {
@@ -32,6 +28,21 @@ public class JdbcContext {
 		}, rowMapper);
 	}
 	
+	public <E> E queryForObject(String sql, Object[] parameters, RowMapper<E> rowMapper) {
+		return queryForObjectListWithStatementStrategy(new StatementStrategy() {
+
+			@Override
+			public PreparedStatement makeStatement(Connection connection) throws SQLException {
+				PreparedStatement pstmt = connection.prepareStatement(sql);
+				for(int i =0 ; i<parameters.length;i++) {
+					pstmt.setObject(i+1, parameters[i]);
+					
+				}
+				return pstmt;
+			}
+			
+		}, rowMapper);
+	}
 
 	public int update(String sql, Object... parameters) {
 		return updateWithStatementStrategy(new StatementStrategy() {
@@ -80,6 +91,20 @@ public class JdbcContext {
 			throw new RuntimeException(e);
 		}
 		return count;
+	}
+	
+	private <E> E queryForObjectListWithStatementStrategy(StatementStrategy statementStrategy, RowMapper<E> rowMapper) {
+		try (Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = statementStrategy.makeStatement(conn);
+			ResultSet rs = pstmt.executeQuery();
+		){
+			if(rs.next()) {
+				return rowMapper.mapRow(rs, rs.getRow());
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return null;
 	}
 
 }

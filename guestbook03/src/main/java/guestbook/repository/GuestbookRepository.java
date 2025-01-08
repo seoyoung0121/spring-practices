@@ -15,6 +15,11 @@ public class GuestbookRepository {
 	public GuestbookRepository(JdbcContext jdbcContext) {
 		this.jdbcContext=jdbcContext;
 	}
+	
+	public GuestbookVo findById(Long id) {
+		return jdbcContext.queryForObject("select id, name, contents, date_format(reg_date, '%Y-%m-%d') as regDate from guestbook where id = ?", new Object[] {id}, new BeanPropertyRowMapper<>(GuestbookVo.class));
+	}
+	
 	public List<GuestbookVo> findAll() {
 		return jdbcContext.query(
 				"select id, name, contents, date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate from guestbook order by reg_date desc", 
