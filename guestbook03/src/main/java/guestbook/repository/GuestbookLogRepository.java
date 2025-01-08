@@ -21,6 +21,6 @@ public class GuestbookLogRepository {
 	}
 	
 	public int update(String regDate) {
-		return jdbcContext.update("update guestbook_log set count = count - 1 where date_format(date, '%Y-%m-%d', date) = ?", regDate);
+		return jdbcContext.update("update guestbook_log set count = count - 1 where date_format(date, '%Y-%m-%d') = ?", regDate);
 	}
 }
