@@ -21,7 +21,7 @@ public class JdbcContext {
 		this.dataSource=dataSource;
 	}
 	
-	public <E> List<E> queryForList(String sql, RowMapper<E> rowMapper) {
+	public <E> List<E> query(String sql, RowMapper<E> rowMapper) {
 		return queryForListWithStatementStrategy(new StatementStrategy() {
 
 			@Override
@@ -33,8 +33,8 @@ public class JdbcContext {
 	}
 	
 
-	public int executeUpdate(String sql, Object[] parameters) {
-		return executeUpdateWithStatementStrategy(new StatementStrategy() {
+	public int update(String sql, Object... parameters) {
+		return updateWithStatementStrategy(new StatementStrategy() {
 
 			@Override
 			public PreparedStatement makeStatement(Connection connection) throws SQLException{
@@ -66,7 +66,7 @@ public class JdbcContext {
 		return result;
 	}
 	
-	private int executeUpdateWithStatementStrategy(StatementStrategy statementStrategy) throws RuntimeException{
+	private int updateWithStatementStrategy(StatementStrategy statementStrategy) throws RuntimeException{
 		int count = 0;
 
 
