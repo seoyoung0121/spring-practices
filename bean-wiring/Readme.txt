@@ -4,7 +4,7 @@
     soundsystem
        |--- CDPlayer.java
        |--- CompactDisc.java
-        |--- HighSchoolRapper2Final
+       |--- HighSchoolRapper2Final.java
 
     config.soundsystem
        |--- CDPlayerConfig.java
@@ -21,7 +21,6 @@
        
 =======================================================
 2. videosystem: Explicit configuration(Bean configuration)
-
 
     videosystem
        |--- DVDPlayer.java
