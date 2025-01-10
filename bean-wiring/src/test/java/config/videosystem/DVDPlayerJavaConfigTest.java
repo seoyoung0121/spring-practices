@@ -40,7 +40,7 @@ public class DVDPlayerJavaConfigTest {
 	private DVDPlayer dvdPlayer2;
 	
 	// 같은 타입의 빈이 2개 이상 있는 경우
-	// 설정 클래스의 빈 생성 메소드의 @Bean의 name(default) 속성으로 Qualifier하기
+	// 설정 클래스의 빈 생성 메소드의 이름으로 Qualifier하기
 	@Autowired
 	@Qualifier("dvdPlayer3")
 	private DVDPlayer dvdPlayer3;
