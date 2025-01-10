@@ -72,7 +72,7 @@ public class DVDPlayerJavaConfigTest {
 	@Test
 	public void testDVDPlayer3() {
 		assertNotNull(dvdPlayer3);
-		assertEquals("Playing Movie Marvel's IronMan", dvdPlayer3.play());
+		assertEquals("Playing Movie Marvel's Iron Man", dvdPlayer3.play());
 	}
 	
 }
